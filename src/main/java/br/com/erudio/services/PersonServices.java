@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.erudio.converter.DozerConverter;
+import br.com.erudio.data.model.Person;
+import br.com.erudio.data.vo.PersonVO;
 import br.com.erudio.exception.ResourceNotFoundException;
-import br.com.erudio.model.Person;
 import br.com.erudio.repository.PersonRepository;
 
 @Service
@@ -15,20 +17,24 @@ public class PersonServices {
 	@Autowired
 	PersonRepository repository;
 	
-	public Person create(Person person) {
-		return repository.save(person);
+	public PersonVO create(PersonVO person) {
+		var entity = DozerConverter.parseObject(person, Person.class);
+		var vo = DozerConverter.parseObject(repository.save(entity), PersonVO.class);
+		return vo;
 	}
 
-	public Person update(Person person) {
-		Person entity = repository.findById(person.getId())
-				                  .orElseThrow(() -> new ResourceNotFoundException("No records found for this id."));
+	public PersonVO update(PersonVO person) {
+		var entity = repository.findById(person.getId())
+				               .orElseThrow(() -> new ResourceNotFoundException("No records found for this id."));
 
 		entity.setFirstName(person.getFirstName());
 		entity.setLastName(person.getLastName());
 		entity.setAddress(person.getAddress());
 		entity.setGender(person.getGender());
 
-		return repository.save(entity);
+		var vo = DozerConverter.parseObject(repository.save(entity), PersonVO.class);
+		
+		return vo;
 	}
 
 	public void delete(Long id) {
@@ -38,13 +44,15 @@ public class PersonServices {
 		repository.delete(person);
 	}
 
-	public Person findById(Long id) {
-		return repository.findById(id)
+	public PersonVO findById(Long id) {
+		var entity = repository.findById(id)
 						 .orElseThrow(() -> new ResourceNotFoundException("No records found for this id."));
+		
+		return DozerConverter.parseObject(entity, PersonVO.class);
 	}
 	
-	public List<Person> findAll() {
-		return repository.findAll();
+	public List<PersonVO> findAll() {
+		return DozerConverter.parseListObjects(repository.findAll(), PersonVO.class);
 	}
 
 }
