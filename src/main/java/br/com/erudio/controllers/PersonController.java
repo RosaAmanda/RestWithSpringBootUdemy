@@ -1,5 +1,8 @@
 package br.com.erudio.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +27,40 @@ public class PersonController {
 	private PersonServices services;
 
 	@GetMapping
-	public List<PersonVO> findByAll() {
-			return services.findAll(); 
+	public List<PersonVO> findAll() {
+		List<PersonVO> persons = services.findAll();
+			
+		for(PersonVO person : persons) {
+			long id = person.getId();
+			person.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+		}
+		return persons; 
 	}
 
 	@GetMapping("/{id}")
 	public PersonVO findById(@PathVariable(value="id") Long id) {
-			return services.findById(id); 
+		PersonVO person = services.findById(id);
+		person.add(linkTo(methodOn(PersonController.class).findAll()).withRel("Lista de produtos"));
+		return person; 
 	}
 
 	@PostMapping
 	public PersonVO create(@RequestBody PersonVO person) {
-			return services.create(person); 
+		PersonVO personVO = services.create(person);
+		personVO.add(linkTo(methodOn(PersonController.class).findById(personVO.getId())).withSelfRel());
+		return services.create(personVO); 
 	}
 
 	@PutMapping
 	public PersonVO update(@RequestBody PersonVO person) {
-			return services.update(person); 
+		PersonVO personVO = services.update(person);
+		personVO.add(linkTo(methodOn(PersonController.class).findById(personVO.getId())).withSelfRel());
+		return services.update(person); 
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value="id") Long id) {
-			services.delete(id);
-			return ResponseEntity.ok().build();
+		services.delete(id);
+		return ResponseEntity.ok().build();
 	}
 }
