@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.services.PersonServices;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(value="PersonEndpoint", tags={"person"})
 @RestController
 @RequestMapping("/api/person/v1")
 public class PersonController {
@@ -26,6 +29,7 @@ public class PersonController {
 	@Autowired //injeção de dependência
 	private PersonServices services;
 
+	@ApiOperation(value="Find all people")
 	@GetMapping
 	public List<PersonVO> findAll() {
 		List<PersonVO> persons = services.findAll();
@@ -37,6 +41,7 @@ public class PersonController {
 		return persons; 
 	}
 
+	@ApiOperation(value="Find by id")
 	@GetMapping("/{id}")
 	public PersonVO findById(@PathVariable(value="id") Long id) {
 		PersonVO person = services.findById(id);
@@ -44,6 +49,7 @@ public class PersonController {
 		return person; 
 	}
 
+	@ApiOperation(value="Create person")
 	@PostMapping
 	public PersonVO create(@RequestBody PersonVO person) {
 		PersonVO personVO = services.create(person);
@@ -51,6 +57,7 @@ public class PersonController {
 		return services.create(personVO); 
 	}
 
+	@ApiOperation(value="Update person")
 	@PutMapping
 	public PersonVO update(@RequestBody PersonVO person) {
 		PersonVO personVO = services.update(person);
@@ -58,6 +65,7 @@ public class PersonController {
 		return services.update(person); 
 	}
 
+	@ApiOperation(value="Delete person")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value="id") Long id) {
 		services.delete(id);
