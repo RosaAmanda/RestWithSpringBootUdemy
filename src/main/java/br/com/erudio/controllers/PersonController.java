@@ -21,6 +21,7 @@ import br.com.erudio.services.PersonServices;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+//@CrossOrigin habilita cors por controller
 @Api(value="PersonEndpoint", tags={"person"})
 @RestController
 @RequestMapping("/api/person/v1")
