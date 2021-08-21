@@ -72,6 +72,19 @@
     		<artifactId>springfox-boot-starter</artifactId>
     		<version>3.0.0</version>
 		</dependency>
+		
+		<!-- for security support -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<!-- for Tokens support -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
